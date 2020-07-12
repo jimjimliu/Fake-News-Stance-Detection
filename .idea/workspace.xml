@@ -2,34 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13a75c2a-7af5-4bf6-8bba-72371a3eefb0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataSet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Feature_Extract.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Preprocess.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Stance_Detection.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/competition_test_bodies.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/competition_test_stances.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/competition_test_stances_unlabeled.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/Adaboost Classifier.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/Decision Tree Classifier.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/Gaussian Naive Bayes .csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/K NN .csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/Linear Discriminant Analysis.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/Qudratic Discriminant Analysis.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/Random Forest Classifier.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/SGD Classifier.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/SVM.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/submissions/answer.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/test_bodies.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/test_stances_unlabeled.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/train_bodies.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/train_stances.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/train_stances.random.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scorer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Feature_Extract.py" beforeDir="false" afterPath="$PROJECT_DIR$/Feature_Extract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stance_Detection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/Adaboost Classifier.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/Decision Tree Classifier.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/Gaussian Naive Bayes .csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/K NN .csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/Linear Discriminant Analysis.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/Qudratic Discriminant Analysis.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/Random Forest Classifier.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/SGD Classifier.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/SVM.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/answer.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/submissions/answer.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scorer.py" beforeDir="false" afterPath="$PROJECT_DIR$/scorer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +37,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.main">
@@ -121,6 +111,22 @@
       <screen x="0" y="23" width="1680" height="975" />
     </state>
     <state x="304" y="172" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.975@0.23.1680.975" timestamp="1594403261619" />
+    <state width="1659" height="217" key="GridCell.Tab.0.bottom" timestamp="1594552882843">
+      <screen x="0" y="23" width="1680" height="975" />
+    </state>
+    <state width="1659" height="217" key="GridCell.Tab.0.bottom/0.23.1680.975@0.23.1680.975" timestamp="1594552882843" />
+    <state width="1659" height="217" key="GridCell.Tab.0.center" timestamp="1594552882842">
+      <screen x="0" y="23" width="1680" height="975" />
+    </state>
+    <state width="1659" height="217" key="GridCell.Tab.0.center/0.23.1680.975@0.23.1680.975" timestamp="1594552882842" />
+    <state width="1659" height="217" key="GridCell.Tab.0.left" timestamp="1594552882842">
+      <screen x="0" y="23" width="1680" height="975" />
+    </state>
+    <state width="1659" height="217" key="GridCell.Tab.0.left/0.23.1680.975@0.23.1680.975" timestamp="1594552882842" />
+    <state width="1659" height="217" key="GridCell.Tab.0.right" timestamp="1594552882843">
+      <screen x="0" y="23" width="1680" height="975" />
+    </state>
+    <state width="1659" height="217" key="GridCell.Tab.0.right/0.23.1680.975@0.23.1680.975" timestamp="1594552882843" />
     <state x="349" y="149" key="SettingsEditor" timestamp="1594403281572">
       <screen x="0" y="23" width="1680" height="975" />
     </state>

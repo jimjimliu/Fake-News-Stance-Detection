@@ -1,0 +1,121 @@
+/Users/liujunhan/PycharmProjects/641_a1/venv/bin/python /Users/liujunhan/PycharmProjects/Fake-News-Stance-Detection/main.py
+================================================
+|                                              |
+| 1, prepareing data                           |
+|                                              |
+================================================
+
+	Unrltd	Discuss	 Agree	Disagree
+All	 36545 	 8909 	 3678 	 840
+Train	 32890 	 8018 	 3310 	 756
+Valid.	 3655 	 891 	 368 	 84
+================================================
+|                                              |
+| 2, extracting training features              |
+|                                              |
+================================================
+[Building inverse doc: ]: 100%|██████████| 12084/12084 [00:00<00:00, 864058.94it/s]
+[Building tf vectors: ]: 100%|██████████| 44974/44974 [00:00<00:00, 309572.04it/s]
+Building tf-idf vectors...
+[Building tf-idf lookup table: ]: 100%|██████████| 2014547/2014547 [00:11<00:00, 182548.91it/s]
+[Loading in word embeddings: ]: 400000it [00:08, 46944.61it/s]
+[Extracting features: ]: 100%|██████████| 12084/12084 [03:39<00:00, 54.93it/s]
+[Building inverse doc: ]: 100%|██████████| 44974/44974 [00:00<00:00, 866250.13it/s]
+[Building tf vectors: ]: 100%|██████████| 44974/44974 [00:00<00:00, 256184.62it/s]
+Building tf-idf vectors...
+[Building tf-idf lookup table: ]: 100%|██████████| 7274323/7274323 [00:42<00:00, 170842.85it/s]
+[Loading in word embeddings: ]: 400000it [00:07, 50326.38it/s]
+[Extracting features: ]: 100%|██████████| 44974/44974 [17:42<00:00, 42.32it/s]
+[Building inverse doc: ]: 100%|██████████| 25413/25413 [00:00<00:00, 891465.43it/s]
+[Building tf vectors: ]: 100%|██████████| 25413/25413 [00:00<00:00, 334940.68it/s]
+================================================
+|                                              |
+| 3, extracting testing features               |
+|                                              |
+================================================
+Building tf-idf vectors...
+[Building tf-idf lookup table: ]: 100%|██████████| 3827313/3827313 [00:22<00:00, 173415.61it/s]
+[Loading in word embeddings: ]: 400000it [00:07, 50894.87it/s]
+[Extracting features: ]: 100%|██████████| 25413/25413 [06:12<00:00, 68.31it/s]
+[Building inverse doc: ]: 100%|██████████| 25413/25413 [00:00<00:00, 863684.11it/s]
+[Building tf vectors: ]: 100%|██████████| 25413/25413 [00:00<00:00, 436734.45it/s]
+Building tf-idf vectors...
+[Building tf-idf lookup table: ]: 100%|██████████| 3827313/3827313 [00:24<00:00, 158581.63it/s]
+[Loading in word embeddings: ]: 400000it [00:07, 50169.92it/s]
+[Extracting features: ]: 100%|██████████| 25413/25413 [09:10<00:00, 46.13it/s]
+================================================
+|                                              |
+| 4, fitting/testing model                     |
+|                                              |
+================================================
+Fitting...
+Predicting...
+SVM  Testing score:  0.07326958643214103
+================================================
+|                                              |
+| 5, neural network model                      |
+|                                              |
+================================================
+2020-07-12 08:07:45.075809: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-07-12 08:07:45.120700: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x2734cc960 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-07-12 08:07:45.120722: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+dense (Dense)                (None, 20)                60
+_________________________________________________________________
+dropout (Dropout)            (None, 20)                0
+_________________________________________________________________
+dense_1 (Dense)              (None, 10)                210
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 10)                0
+_________________________________________________________________
+dense_2 (Dense)              (None, 3)                 33
+=================================================================
+Total params: 303
+Trainable params: 303
+Non-trainable params: 0
+_________________________________________________________________
+ACCURACY: 0.865
+================================================
+|                                              |
+| 5, Writing submission results                |
+|                                              |
+================================================
+25413 25413
+Submission.csv is saved at:  /Users/liujunhan/PycharmProjects/Fake-News-Stance-Detection/data/submissions/answer.csv
+CONFUSION MATRIX:
+-------------------------------------------------------------
+|           |   agree   | disagree  |  discuss  | unrelated |
+-------------------------------------------------------------
+|   agree   |     0     |     0     |   1690    |    213    |
+-------------------------------------------------------------
+| disagree  |     0     |     0     |    525    |    172    |
+-------------------------------------------------------------
+|  discuss  |     0     |     0     |   3976    |    488    |
+-------------------------------------------------------------
+| unrelated |     0     |     0     |    334    |   18015   |
+-------------------------------------------------------------
+ACCURACY: 0.865
+
+MAX  - the best possible score (100% accuracy)
+NULL - score as if all predicted stances were unrelated
+TEST - score based on the provided predictions
+
+||    MAX    ||    NULL   ||    TEST   ||
+|| 11651.25  ||  4587.25  ||  9033.5   ||
+
+CONFUSION MATRIX:
+-------------------------------------------------------------
+|           |   agree   | disagree  |  discuss  | unrelated |
+-------------------------------------------------------------
+|   agree   |     0     |     0     |   1690    |    213    |
+-------------------------------------------------------------
+| disagree  |     0     |     0     |    525    |    172    |
+-------------------------------------------------------------
+|  discuss  |     0     |     0     |   3976    |    488    |
+-------------------------------------------------------------
+| unrelated |     0     |     0     |    334    |   18015   |
+-------------------------------------------------------------
+ACCURACY: 0.865

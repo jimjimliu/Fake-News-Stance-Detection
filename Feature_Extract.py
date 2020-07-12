@@ -14,13 +14,14 @@ from nltk import word_tokenize
 from nltk.corpus import stopwords
 from tqdm import tqdm
 from imblearn.over_sampling import SMOTE
+import random
 
 
 LABEL = {'agree': 0, 'disagree': 1, 'discuss': 2, 'unrelated': 3}
 
 class FeatureExtract(object):
 
-    def __init__(self, data=None, over_sampling=False):
+    def __init__(self, data=None, over_sampling=False, separate=None, set='train'):
         '''
 
         :param data: (np.array) has ['headline', 'body id', 'stance'] as rows
@@ -28,10 +29,24 @@ class FeatureExtract(object):
             If True, resampling data set using oversampling.
             Defualt=False
         '''
+        self.sep = separate
+        self.label = {'agree': 0, 'disagree': 1, 'discuss': 2, 'unrelated': 3}
         self.__data = data
+        # training set is using subset of original data set, using rows with different labels
+        if set == 'train':
+            if separate == 'binary':
+                # data set to feed conventional classifier
+                self.__data, self.__index = self.to_related()
+                self.label = {'related': 0, 'unrelated': 1}
+            if separate == 'tri':
+                # data set to feed neural network
+                self.label = {'agree': 0, 'disagree': 1, 'discuss': 2}
+                self.__data, self.__index = self.to_tri()
+        else:
+            self.__data = data
         self.__over_sam = over_sampling
         self.__embedding = os.path.join(os.getcwd(), 'data', "glove.6B.50d.txt")
-        # build invese dict for data
+        # build inverse dict for data
         self.__inverse_doc = self.__inverse_doc()
         # build tf vector for head+body
         self.__tf_vector = self.data_to_tf(data)
@@ -40,9 +55,49 @@ class FeatureExtract(object):
         self.__glove_vectors = self.__load_word_embedding()
         self.__x_train, self.__y_train = self.__extract_features()
 
+    def to_related(self):
+        '''
+        convert the original data set, change labels [agree, disagree, discuss] to [related]
+        for conventional classifier to train. keep unrelated label untouched
+
+        :return:
+        '''
+        data = pd.DataFrame(self.__data, columns=['head','body','stance'])
+        # print(data[:10], data.shape)
+        # exit()
+        data.loc[data['stance']=='discuss', 'stance'] = 'related'
+        data.loc[data['stance'] == 'agree', 'stance'] = 'related'
+        data.loc[data['stance'] == 'disagree', 'stance'] = 'related'
+        # print(data[data['stance']=='related'].count())
+        data = data.sample(frac=1)
+        index = data[:].index.tolist()
+        # print(data[:5])
+        # print(index[:5])
+        # print(len(index))
+        # exit()
+        data = np.array(data)
+        return data, index
+
+    def to_tri(self):
+        '''
+        select a subset from original data set. choose rows that have label
+        of [agree, disagree, discuss] for neural network to train.
+
+        :return:
+        '''
+        data = pd.DataFrame(self.__data, columns=['head','body','stance'])
+        data = pd.concat([data[data['stance']=='agree'], data[data['stance']=='disagree'], data[data['stance']=='discuss']])
+        data = data.sample(frac=1)
+        index = data[:].index.tolist()
+        data = np.array(data)
+        return data, index
+
     def __extract_features(self):
 
-        ftrs = [self.cosine_similarity, self.kl_divergence, self.ngram_overlap]
+        if self.sep == 'tri':
+            ftrs = [self.cosine_similarity, self.kl_divergence]
+        else:
+            ftrs = [self.cosine_similarity, self.kl_divergence, self.ngram_overlap]
 
         x_train = []
         for doc in tqdm(self.__data, desc="[Extracting features: ]"):
@@ -54,7 +109,7 @@ class FeatureExtract(object):
             # vec = np.concatenate((vec, self.__tf_vector[index]))
             x_train.append(vec)
         x_train = np.array(x_train)
-        y_train = np.array([LABEL[i] for i in self.__data[:, 2]])
+        y_train = np.array([self.label[i] for i in self.__data[:, 2]])
 
         if(self.__over_sam):
             print("Over-sampling...")
@@ -132,7 +187,8 @@ class FeatureExtract(object):
 
     def __load_word_embedding(self):
         # Load GLoVe word vectors
-        f_glove = open(self.__embedding, "rb")  # download from https://nlp.stanford.edu/projects/glove/
+        # download from https://nlp.stanford.edu/projects/glove/
+        f_glove = open(self.__embedding, "rb")
         glove_vectors = {}
         for line in tqdm(f_glove, desc="[Loading in word embeddings: ]"):
             glove_vectors[str(line.split()[0]).split("'")[1]] = np.array(list(map(float, line.split()[1:])))
@@ -161,18 +217,16 @@ class FeatureExtract(object):
         return cos
 
     def divergence(self, lm1, lm2):
-        # Compute the KL-Divergence of language model (LM) representations of the headline and the body
         sigma = 0.0
-        for i in range(lm1.shape[0]):  # assume lm1 and lm2 has same shape
+        for i in range(lm1.shape[0]):
             sigma += lm1[i] * np.log(lm1[i] / lm2[i])
         return sigma
 
     def kl_divergence(self, doc, eps=0.1):
-        # Convert headline and body to 1-gram representations
+
         tf_headline = self.doc_to_tf(doc[0])
         tf_body = self.doc_to_tf(doc[1])
 
-        # Convert dictionary tf representations to vectors (make sure columns match to the same word)
         words = set(tf_headline.keys()).union(set(tf_body.keys()))
         vec_headline, vec_body = np.zeros(len(words)), np.zeros(len(words))
         i = 0
@@ -181,24 +235,21 @@ class FeatureExtract(object):
             vec_body[i] = tf_body[word]
             i += 1
 
-        # Compute a simple 1-gram language model of headline and body
         lm_headline = vec_headline + eps
         lm_headline /= np.sum(lm_headline)
         lm_body = vec_body + eps
         lm_body /= np.sum(lm_body)
 
-        # Return KL-divergence of both language models
         return self.divergence(lm_headline, lm_body)
 
     def ngram_overlap(self, doc):
-        # Returns how many times n-grams (up to 3-gram) that occur in the article's headline occur on the article's body.
         tf_headline = self.doc_to_tf(doc[0], ngram=3)
         tf_body = self.doc_to_tf(doc[1], ngram=3)
         matches = 0.0
         for words in tf_headline.keys():
             if words in tf_body:
                 matches += tf_body[words]
-        return np.power((matches / len(self.tokenise(doc[1]))), 1 / np.e)  # normalise for document length
+        return np.power((matches / len(self.tokenise(doc[1]))), 1 / np.e)
 
     def get_X(self):
         return self.__x_train
@@ -206,16 +257,9 @@ class FeatureExtract(object):
     def get_y(self):
         return self.__y_train
 
-    def get_idf_lookup(self):
-        return self.__idf_lookup
-
     def get_tfidf_lookup(self):
         return self.__tfidf_lookup
 
-if __name__ == '__main__':
-    arr = ["Rare sighting of Anna Wintour without her trademark sunglasses as she leaves rat-infested Vogue office",
-           "Homeland Security Secretary Jeh Johnson is pushing back against a claim made by Rep."]
-    arr = np.array(arr)
-    fe = FeatureExtract()
-    print(fe.tokenise(arr[0]))
-    print(word_tokenize(arr[0]))
+    def get_index(self):
+        return self.__index
+

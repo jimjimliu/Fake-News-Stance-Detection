@@ -2,6 +2,7 @@ import os
 import pickle
 from csv import DictReader
 import pandas as pd
+import numpy as np
 
 
 # directory where all generated and saved models at

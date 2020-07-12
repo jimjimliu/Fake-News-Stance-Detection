@@ -41,10 +41,13 @@ from keras.utils import np_utils
 from tensorflow.keras import regularizers
 from sklearn.metrics import accuracy_score
 from keras.utils import np_utils
+from sklearn.ensemble import GradientBoostingClassifier
+import seaborn as sns
+from matplotlib import pyplot as plt
 
 
 # CONFIGURATION PARAMETER
-PREPROCESS = True
+PREPROCESS = False
 OVER_SAMPLING = False
 TF_MAX_FEATURE = 5000
 
@@ -53,6 +56,9 @@ class main():
     def __init__(self, path=None):
         self.path = path
         self.__classifiers = self.classifiers()
+        self.__model_score = {}
+        self.half_pred = []
+
 
     def classify(self):
         '''
@@ -65,166 +71,133 @@ class main():
         ds = DataSet(preprocess=PREPROCESS)
         train_all = ds.get_train()
         val_all = ds.get_validation()
-
-
-        # "------------------------------------preparing data set--------------------------------------------------"
-        # f_bodies = open(os.path.join(os.getcwd(), 'data', 'train_bodies.csv'), 'r', encoding='utf-8')
-        # csv_bodies = csv.DictReader(f_bodies)
-        # bodies = []
-        # for row in csv_bodies:
-        #     body_id = int(row['Body ID'])
-        #     if (body_id + 1) > len(bodies):
-        #         bodies += [None] * (body_id + 1 - len(bodies))
-        #     bodies[body_id] = row['articleBody']
-        # f_bodies.close()
-        # body_inverse_index = {bodies[i]: i for i in range(len(bodies))}
-        #
-        # all_unrelated, all_discuss, all_agree, all_disagree = [], [], [], []  # each article = (headline, body, stance)
-        #
-        # f_stances = open(os.path.join(os.getcwd(), 'data', 'train_stances.csv'), 'r', encoding='utf-8')
-        # csv_stances = csv.DictReader(f_stances)
-        # for row in csv_stances:
-        #     body = bodies[int(row['Body ID'])]
-        #     if row['Stance'] == 'unrelated':
-        #         all_unrelated.append((row['Headline'], body, row['Stance']))
-        #     elif row['Stance'] == 'discuss':
-        #         all_discuss.append((row['Headline'], body, row['Stance']))
-        #     elif row['Stance'] == 'agree':
-        #         all_agree.append((row['Headline'], body, row['Stance']))
-        #     elif row['Stance'] == 'disagree':
-        #         all_disagree.append((row['Headline'], body, row['Stance']))
-        # f_stances.close()
-        #
-        # # In[3]:
-        #
-        # print('\tUnrltd\tDiscuss\t Agree\tDisagree')
-        # print('All\t', len(all_unrelated), '\t', len(all_discuss), '\t', len(all_agree), '\t', len(all_disagree))
-        #
-        # train_unrelated = all_unrelated[:len(all_unrelated) * 9 // 10]
-        # train_discuss = all_discuss[:len(all_discuss) * 9 // 10]
-        # train_agree = all_agree[:len(all_agree) * 9 // 10]
-        # train_disagree = all_disagree[:len(all_disagree) * 9 // 10]
-        #
-        # val_unrelated = all_unrelated[len(all_unrelated) * 9 // 10:]
-        # val_discuss = all_discuss[len(all_discuss) * 9 // 10:]
-        # val_agree = all_agree[len(all_agree) * 9 // 10:]
-        # val_disagree = all_disagree[len(all_disagree) * 9 // 10:]
-        #
-        # train_unrelated = all_unrelated[:len(all_unrelated) // 50]
-        # train_discuss = all_discuss[:len(all_discuss) // 50]
-        # train_agree = all_agree[:len(all_agree) // 50]
-        # train_disagree = all_disagree[:len(all_disagree) // 50]
-        #
-        # val_unrelated = all_unrelated[len(all_unrelated) * 9 // 10:]
-        # val_discuss = all_discuss[len(all_discuss) * 9 // 10:]
-        # val_agree = all_agree[len(all_agree) * 9 // 10:]
-        # val_disagree = all_disagree[len(all_disagree) * 9 // 10:]
-        #
-        # val_unrelated = val_unrelated[len(val_unrelated) * 9 // 10:]
-        # val_discuss = val_discuss[len(val_discuss) * 9 // 10:]
-        # val_agree = val_agree[len(val_agree) * 9 // 10:]
-        # val_disagree = val_disagree[len(val_disagree) * 9 // 10:]
-        #
-        # print('Train\t', len(train_unrelated), '\t', len(train_discuss), '\t', len(train_agree), '\t',
-        #       len(train_disagree))
-        # print('Valid.\t', len(val_unrelated), '\t', len(val_discuss), '\t', len(val_agree), '\t', len(val_disagree))
-        # # exit()
-        # # # Uniform distribution of Data
-        #
-        # # In[4]:
-        # train_all = (train_unrelated + train_discuss + train_agree + train_disagree)
-        #
-        # # each article = (headline, body, stance)
-        # # random.Random(0).shuffle(train_all)
-        # train_all = np.array(train_all)
-        #
-        # '----------------------------------------------'
-
         test_all = ds.get_test()
-        # print('training set: \n', train_all[:1], train_all.shape, type(train_all))
-        # print('validation set: \n', val_all[:1], val_all.shape, type(val_all))
 
         "extract features from training set"
         utils.print_info("2, extracting training features")
-        fe = FeatureExtract(train_all, over_sampling=OVER_SAMPLING)
-        X_train, y_train = fe.get_X(), fe.get_y()
+        # using NN model to train, 2 features with labels [agree, disagree, discuss]
+        fe = FeatureExtract(train_all, over_sampling=OVER_SAMPLING, separate='tri')
+        X_train_tri, y_train_tri = fe.get_X(), fe.get_y()
+        # using SVM to train, 3 features, with label [related, unrelated]
+        fe_bi = FeatureExtract(train_all, over_sampling=OVER_SAMPLING, separate='binary')
+        X_train_bi, y_train_bi = fe_bi.get_X(), fe_bi.get_y()
 
         "extract features from testing set"
         utils.print_info("3, extracting testing features")
-        fe_test = FeatureExtract(test_all)
+        # using NN model to test, 2 features
+        fe_test = FeatureExtract(test_all, set='test', separate='tri')
         X_test, y_test = fe_test.get_X(), fe_test.get_y()
+        #
+        fe_test_bi = FeatureExtract(test_all, set='test', separate='binary')
+        X_test_bi, y_test_bi = fe_test_bi.get_X(), fe_test_bi.get_y()
 
         "fit model"
         utils.print_info("4, fitting/testing model")
-        self.clf_comparison(X_train, y_train, X_test, y_test)
+        self.clf_comparison(X_train_bi, y_train_bi, X_test_bi, y_test_bi)
 
         "testing"
         utils.print_info("5, neural network model")
-        self.NN_model(X_train,y_train,X_test,y_test)
+        self.NN_model(X_train_tri,y_train_tri,X_test,y_test)
 
+        "ploting"
+        # utils.print_info("6, plotting")
+        # self.show_plot()
 
     def classifiers(self):
         return [
             (SVC(C=50.0, cache_size=200, class_weight=None, coef0=0.0,
                  decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
-                 max_iter=-1, probability=False, random_state=None, shrinking=True,
-                 tol=0.001, verbose=False), 'SVM'),
+                 max_iter=-1, probability=True, random_state=None, shrinking=True,
+                 tol=0.001, verbose=False), 'SVM', 'SVM'),
 
-            (KNeighborsClassifier(1), "K NN "),
-
-            (QuadraticDiscriminantAnalysis(), 'Qudratic Discriminant Analysis'),
-
-            (RandomForestClassifier(max_depth=50, n_estimators=10, max_features=1), 'Random Forest Classifier'),
-
-            (AdaBoostClassifier(base_estimator=None, n_estimators=50, learning_rate=0.01,
-                                algorithm='SAMME.R', random_state=None), 'Adaboost Classifier'),
-            (SGDClassifier(), 'SGD Classifier'),
-
-            (DecisionTreeClassifier(max_depth=5), 'Decision Tree Classifier'),
-
-            (LinearDiscriminantAnalysis(solver='svd', shrinkage=None, priors=None, n_components=None,
-                                        store_covariance=False, tol=0.00001), 'Linear Discriminant Analysis'),
-
-            (GaussianNB(), 'Gaussian Naive Bayes ')
+            # (GradientBoostingClassifier(random_state=0), 'GBDT', 'GBDT'),
+            #
+            # (KNeighborsClassifier(1), "K NN ", 'KNN'),
+            #
+            # (QuadraticDiscriminantAnalysis(), 'Qudratic Discriminant Analysis', 'QD'),
+            #
+            # (RandomForestClassifier(max_depth=50, n_estimators=10, max_features=1), 'Random Forest Classifier', 'RF'),
+            #
+            # (AdaBoostClassifier(base_estimator=None, n_estimators=50, learning_rate=0.01,
+            #                     algorithm='SAMME.R', random_state=None), 'Adaboost Classifier', 'Ada'),
+            # (SGDClassifier(), 'SGD Classifier', 'SGD'),
+            #
+            # (DecisionTreeClassifier(max_depth=5), 'Decision Tree Classifier', 'DT'),
+            #
+            # (LinearDiscriminantAnalysis(solver='svd', shrinkage=None, priors=None, n_components=None,
+            #                             store_covariance=False, tol=0.00001), 'Linear Discriminant Analysis', 'LDA'),
+            #
+            # (GaussianNB(), 'Gaussian Naive Bayes ', 'GNB')
         ]
 
     def clf_comparison(self, X, y, X_test, y_test):
+        '''
+        Frist step of 2 step classification.
+        using conventional classifier to train data set with only labels [related, unrelated].
+        By using SVM, the accuracy of binary classification can be above 95%.
+        store the predition result in global variable for future use.
+
+        :param X:
+        :param y:
+        :param X_test:
+        :param y_test:
+        :return:
+        '''
+
         competition_test = utils.read('competition_test_stances.csv')
         gold_labels = load_dataset(os.path.join(DATA_PATH, 'competition_test_stances.csv'))
 
-        for model, name in self.__classifiers:
+        for model, name, initial in self.__classifiers:
             print("Fitting...")
             clf = model.fit(X, y)
             print("Predicting...")
             predictions = clf.predict(X_test)
+            # store GDBT's prediction on agree and disagree
+            self.half_pred = predictions
             print(name, " Testing score: ", clf.score(X_test, y_test))
-            utils.write_out(competition_test, predictions, name)
+            # utils.write_out(competition_test, predictions, name+' submission')
 
-            "print confusion matrix and score"
-            test_labels = load_dataset(os.path.join(SUBMISSION_PATH, name+'.csv'))
-            test_score, cm = score_submission(gold_labels, test_labels)
-            null_score, max_score = score_defaults(gold_labels)
-            print_confusion_matrix(cm)
-            print(SCORE_REPORT.format(max_score, null_score, test_score))
+            # "print confusion matrix and score"
+            # test_labels = load_dataset(os.path.join(SUBMISSION_PATH, name+' submission.csv'))
+            # test_score, cm = score_submission(gold_labels, test_labels)
+            # null_score, max_score = score_defaults(gold_labels)
+            # print_confusion_matrix(cm)
+            # print(SCORE_REPORT.format(max_score, null_score, test_score))
+            # self.__model_score[initial] = [test_score, print_confusion_matrix(cm)]
 
     def NN_model(self, X, y, X_test, y_test):
-        y = np_utils.to_categorical(y, 4)
+        '''
+        second step of 2 step classification.
+        using neural network to classify 3 labels [agree, disagree, discuss].
+
+        :param X:
+        :param y:
+        :param X_test:
+        :param y_test:
+        :return:
+        '''
+        y = np_utils.to_categorical(y, 3)
         y_true = y_test
-        y_test = np_utils.to_categorical(y_test, 4)
+        # y_test = np_utils.to_categorical(y_test, 3)
 
         init = initializers.glorot_uniform(seed=1)
         model = Sequential()
-        model.add(Dense(units=20, input_dim=3,kernel_initializer=init,  activation='relu'))
+        model.add(Dense(units=20, input_dim=2,kernel_initializer=init,  activation='relu'))
         model.add(Dropout(0.3))
         model.add(Dense(units=10, kernel_initializer=init, activation='relu'))
         model.add(Dropout(0.3))
-        model.add(Dense(units=4, kernel_initializer=init, activation='softmax'))
+        model.add(Dense(units=3, kernel_initializer=init, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
         model.summary()
-        model.fit(X, y, batch_size=10, epochs=400, validation_data=(X_test, y_test), verbose=2)
-        loss, accuracy = model.evaluate(X_test, y_test)
-        print('Accuracy: %f' % (accuracy * 100))
+        model.fit(X, y, batch_size=5, epochs=120, verbose=2)
+        # loss, accuracy = model.evaluate(X_test, y_test)
+        # print('Accuracy: %f' % (accuracy * 100))
+        # exit()
         predictions = np.argmax(model.predict(X_test), axis=-1)
+
+        "combine clf and NN clf's result together"
+        predictions = self.__combine(self.half_pred, predictions)
+
         print(accuracy_score(y_true, predictions))
 
         "write out submission file"
@@ -240,10 +213,59 @@ class main():
         null_score, max_score = score_defaults(gold_labels)
         print_confusion_matrix(cm)
         print(SCORE_REPORT.format(max_score, null_score, test_score))
+        self.__model_score['FNN'] = [test_score, print_confusion_matrix(cm)]
 
+    def __combine(self, clf_pred, nn_pred):
+        predictions = []
+        for i in range(len(clf_pred)):
+            # 如果是1,代表unrelated, 变成3
+            if clf_pred[i] == 1:
+                predictions.append(3)
+            else:
+                predictions.append(nn_pred[i])
+
+        return np.array(predictions)
+
+    def __average_models(self, nn_pred, nn_prob):
+        ml_clf_pred = self.clf_pred_dict['GBDT']['pred']
+        ml_clf_prob = self.clf_pred_dict['GBDT']['prob']
+        # print(type(ml_clf_pred), type(ml_clf_prob), type(nn_pred), type(nn_prob))
+        # compare two predictions and find indexes of rows that have different stance predictions
+
+        final_prediction = np.array([0] * len(nn_pred))
+        for i in range(len(nn_pred)):
+            if not nn_pred[i] == ml_clf_pred[i]:
+                prob = (ml_clf_prob[i]+nn_prob[i])/2
+                label = np.where(prob == np.amax(prob))[0][0]
+                final_prediction[i] = label
+                # print(ml_clf_prob[i], nn_prob[i])
+                # print(label)
+            else:
+                final_prediction[i] = nn_pred[i]
+
+        return final_prediction
+
+    def show_plot(self):
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        metrics = np.array(list(self.__model_score.values()))
+        accu = metrics[:, 1] #accuracy
+        scores = metrics[:, 0] #scores
+        plt.plot(accu)
+        for i, label in enumerate(list(self.__model_score.keys())):
+            plt.text(i, accu[i], label)
+        plt.show()
+
+        plt.plot(scores)
+        for i, label in enumerate(list(self.__model_score.keys())):
+            plt.text(i, scores[i], label)
+        plt.show()
 
 
 if __name__ == '__main__':
+    "before running, download word_embedding file at https://nlp.stanford.edu/projects/glove/"
+    "put the glove.6B.50d.txt into data folder and you are good to go"
     main().classify()
 
 
