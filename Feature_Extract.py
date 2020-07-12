@@ -16,9 +16,6 @@ from tqdm import tqdm
 from imblearn.over_sampling import SMOTE
 import random
 
-
-LABEL = {'agree': 0, 'disagree': 1, 'discuss': 2, 'unrelated': 3}
-
 class FeatureExtract(object):
 
     def __init__(self, data=None, over_sampling=False, separate=None, set='train'):
@@ -63,18 +60,11 @@ class FeatureExtract(object):
         :return:
         '''
         data = pd.DataFrame(self.__data, columns=['head','body','stance'])
-        # print(data[:10], data.shape)
-        # exit()
         data.loc[data['stance']=='discuss', 'stance'] = 'related'
         data.loc[data['stance'] == 'agree', 'stance'] = 'related'
         data.loc[data['stance'] == 'disagree', 'stance'] = 'related'
-        # print(data[data['stance']=='related'].count())
         data = data.sample(frac=1)
         index = data[:].index.tolist()
-        # print(data[:5])
-        # print(index[:5])
-        # print(len(index))
-        # exit()
         data = np.array(data)
         return data, index
 
@@ -104,9 +94,6 @@ class FeatureExtract(object):
             vec = np.array([0.0] * len(ftrs))
             for i in range(len(ftrs)):
                 vec[i] = ftrs[i](doc)
-            # # get tf vector of head+body
-            # index = self.__inverse_doc[doc.tobytes()]
-            # vec = np.concatenate((vec, self.__tf_vector[index]))
             x_train.append(vec)
         x_train = np.array(x_train)
         y_train = np.array([self.label[i] for i in self.__data[:, 2]])

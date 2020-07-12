@@ -47,7 +47,7 @@ from matplotlib import pyplot as plt
 
 
 # CONFIGURATION PARAMETER
-PREPROCESS = False
+PREPROCESS = True
 OVER_SAMPLING = False
 TF_MAX_FEATURE = 5000
 
@@ -87,7 +87,7 @@ class main():
         # using NN model to test, 2 features
         fe_test = FeatureExtract(test_all, set='test', separate='tri')
         X_test, y_test = fe_test.get_X(), fe_test.get_y()
-        #
+        # using SVM to predict
         fe_test_bi = FeatureExtract(test_all, set='test', separate='binary')
         X_test_bi, y_test_bi = fe_test_bi.get_X(), fe_test_bi.get_y()
 
@@ -99,9 +99,6 @@ class main():
         utils.print_info("5, neural network model")
         self.NN_model(X_train_tri,y_train_tri,X_test,y_test)
 
-        "ploting"
-        # utils.print_info("6, plotting")
-        # self.show_plot()
 
     def classifiers(self):
         return [
@@ -155,15 +152,6 @@ class main():
             # store GDBT's prediction on agree and disagree
             self.half_pred = predictions
             print(name, " Testing score: ", clf.score(X_test, y_test))
-            # utils.write_out(competition_test, predictions, name+' submission')
-
-            # "print confusion matrix and score"
-            # test_labels = load_dataset(os.path.join(SUBMISSION_PATH, name+' submission.csv'))
-            # test_score, cm = score_submission(gold_labels, test_labels)
-            # null_score, max_score = score_defaults(gold_labels)
-            # print_confusion_matrix(cm)
-            # print(SCORE_REPORT.format(max_score, null_score, test_score))
-            # self.__model_score[initial] = [test_score, print_confusion_matrix(cm)]
 
     def NN_model(self, X, y, X_test, y_test):
         '''
@@ -225,42 +213,6 @@ class main():
                 predictions.append(nn_pred[i])
 
         return np.array(predictions)
-
-    def __average_models(self, nn_pred, nn_prob):
-        ml_clf_pred = self.clf_pred_dict['GBDT']['pred']
-        ml_clf_prob = self.clf_pred_dict['GBDT']['prob']
-        # print(type(ml_clf_pred), type(ml_clf_prob), type(nn_pred), type(nn_prob))
-        # compare two predictions and find indexes of rows that have different stance predictions
-
-        final_prediction = np.array([0] * len(nn_pred))
-        for i in range(len(nn_pred)):
-            if not nn_pred[i] == ml_clf_pred[i]:
-                prob = (ml_clf_prob[i]+nn_prob[i])/2
-                label = np.where(prob == np.amax(prob))[0][0]
-                final_prediction[i] = label
-                # print(ml_clf_prob[i], nn_prob[i])
-                # print(label)
-            else:
-                final_prediction[i] = nn_pred[i]
-
-        return final_prediction
-
-    def show_plot(self):
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        metrics = np.array(list(self.__model_score.values()))
-        accu = metrics[:, 1] #accuracy
-        scores = metrics[:, 0] #scores
-        plt.plot(accu)
-        for i, label in enumerate(list(self.__model_score.keys())):
-            plt.text(i, accu[i], label)
-        plt.show()
-
-        plt.plot(scores)
-        for i, label in enumerate(list(self.__model_score.keys())):
-            plt.text(i, scores[i], label)
-        plt.show()
 
 
 if __name__ == '__main__':
