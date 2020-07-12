@@ -131,7 +131,7 @@ def print_confusion_matrix(cm):
         lines.append("-"*line_len)
     lines.append("ACCURACY: {:.3f}".format(hit / total))
     print('\n'.join(lines))
-    # return hit/total
+    return hit/total
 
 
 if __name__ == '__main__':
