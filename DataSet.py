@@ -7,6 +7,7 @@ from utils import utils
 import random
 from sklearn.model_selection import train_test_split
 from Preprocess import Preprocess
+import matplotlib.pyplot as plt
 
 LABELS = ['agree', 'disagree', 'discuss', 'unrelated']
 
@@ -24,7 +25,9 @@ class DataSet():
         self.__train_stance_csv = os.path.join(self.__data_folder, 'train_stances.csv')
         self.__test_bodies_csv = os.path.join(self.__data_folder, 'test_bodies.csv')
         self.__test_stances_csv = os.path.join(self.__data_folder, 'competition_test_stances.csv')
+        self.__all = []
         self.__train_all, self.__val_all, self.__test_all = self.__reader()
+        # self.plot_distribution()
 
     def __reader(self):
         '''
@@ -41,6 +44,8 @@ class DataSet():
         # assign target number to each type of target name
         for i in range(len(LABELS)):
             train_stances_df.loc[train_stances_df['stance'] == LABELS[i], 'target'] = i
+
+        self.__all = train_stances_df
 
         "read in testing sets"
         test_bodies_df = pd.read_csv(r'' + self.__test_bodies_csv, delimiter=',', header=0, sep='\t',
@@ -100,4 +105,21 @@ class DataSet():
 
     def get_test(self):
         return self.__test_all
+
+    def plot_distribution(self):
+        # Generate data on commute times.
+        df = self.__all['stance'].value_counts()
+
+
+        # ax = df.plot().hist(grid=True, bins=4, rwidth=0.9,
+        #                    color='#607c8e')
+        df.plot(kind='bar', x=[1,2,3,4])
+
+        plt.title('label distribution')
+        plt.xlabel('class')
+        plt.ylabel('counts')
+        plt.grid(axis='y', alpha=0.75)
+        plt.show()
+if __name__ == "__main__":
+    DataSet()
 

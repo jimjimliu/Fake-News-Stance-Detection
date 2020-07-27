@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="13a75c2a-7af5-4bf6-8bba-72371a3eefb0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Fake-News-Stance-Detection.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Fake-News-Stance-Detection.iml" afterDir="false" />
+    <list default="true" id="d8fa1a4f-1fbf-4ea1-8680-ef1d69d66bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Feature_Extract.py" beforeDir="false" afterPath="$PROJECT_DIR$/Feature_Extract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataSet.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataSet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/submissions/answer.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/submissions/answer.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scorer.py" beforeDir="false" afterPath="$PROJECT_DIR$/scorer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,19 +17,41 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1eVOKsE0EmEkXHEusM200Manllc" />
+  <component name="ProjectId" id="1ebYMmDaWbEJsRxebXs6YnzVoFy" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.DataSet">
+    <configuration name="DataSet" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Fake-News-Stance-Detection" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DataSet.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Fake-News-Stance-Detection" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Fake-News-Stance-Detection" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -75,9 +97,11 @@
     <list>
       <item itemvalue="Python.Fake-News-Stance-Detection" />
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.DataSet" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.DataSet" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -87,38 +111,42 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="13a75c2a-7af5-4bf6-8bba-72371a3eefb0" name="Default Changelist" comment="" />
-      <created>1594403232977</created>
+      <changelist id="d8fa1a4f-1fbf-4ea1-8680-ef1d69d66bcb" name="Default Changelist" comment="" />
+      <created>1594591713398</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1594403232977</updated>
+      <updated>1594591713398</updated>
     </task>
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="304" y="172" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594403261619">
+    <state x="304" y="172" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594591757113">
       <screen x="0" y="23" width="1680" height="975" />
     </state>
-    <state x="304" y="172" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.975@0.23.1680.975" timestamp="1594403261619" />
-    <state width="1659" height="217" key="GridCell.Tab.0.bottom" timestamp="1594552882843">
+    <state x="304" y="172" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.975@0.23.1680.975" timestamp="1594591757113" />
+    <state width="1638" height="281" key="GridCell.Tab.0.bottom" timestamp="1594706132106">
       <screen x="0" y="23" width="1680" height="975" />
     </state>
-    <state width="1659" height="217" key="GridCell.Tab.0.bottom/0.23.1680.975@0.23.1680.975" timestamp="1594552882843" />
-    <state width="1659" height="217" key="GridCell.Tab.0.center" timestamp="1594552882842">
+    <state width="1638" height="281" key="GridCell.Tab.0.bottom/0.23.1680.975@0.23.1680.975" timestamp="1594706132106" />
+    <state width="1638" height="281" key="GridCell.Tab.0.center" timestamp="1594706132105">
       <screen x="0" y="23" width="1680" height="975" />
     </state>
-    <state width="1659" height="217" key="GridCell.Tab.0.center/0.23.1680.975@0.23.1680.975" timestamp="1594552882842" />
-    <state width="1659" height="217" key="GridCell.Tab.0.left" timestamp="1594552882842">
+    <state width="1638" height="281" key="GridCell.Tab.0.center/0.23.1680.975@0.23.1680.975" timestamp="1594706132105" />
+    <state width="1638" height="281" key="GridCell.Tab.0.left" timestamp="1594706132104">
       <screen x="0" y="23" width="1680" height="975" />
     </state>
-    <state width="1659" height="217" key="GridCell.Tab.0.left/0.23.1680.975@0.23.1680.975" timestamp="1594552882842" />
-    <state width="1659" height="217" key="GridCell.Tab.0.right" timestamp="1594552882843">
+    <state width="1638" height="281" key="GridCell.Tab.0.left/0.23.1680.975@0.23.1680.975" timestamp="1594706132104" />
+    <state width="1638" height="281" key="GridCell.Tab.0.right" timestamp="1594706132105">
       <screen x="0" y="23" width="1680" height="975" />
     </state>
-    <state width="1659" height="217" key="GridCell.Tab.0.right/0.23.1680.975@0.23.1680.975" timestamp="1594552882843" />
-    <state x="349" y="149" key="SettingsEditor" timestamp="1594403281572">
+    <state width="1638" height="281" key="GridCell.Tab.0.right/0.23.1680.975@0.23.1680.975" timestamp="1594706132105" />
+    <state x="513" y="301" key="MultipleFileMergeDialog" timestamp="1594701737850">
       <screen x="0" y="23" width="1680" height="975" />
     </state>
-    <state x="349" y="149" key="SettingsEditor/0.23.1680.975@0.23.1680.975" timestamp="1594403281572" />
+    <state x="513" y="301" key="MultipleFileMergeDialog/0.23.1680.975@0.23.1680.975" timestamp="1594701737850" />
+    <state x="349" y="149" key="SettingsEditor" timestamp="1594591736374">
+      <screen x="0" y="23" width="1680" height="975" />
+    </state>
+    <state x="349" y="149" key="SettingsEditor/0.23.1680.975@0.23.1680.975" timestamp="1594591736373" />
   </component>
 </project>

@@ -21,6 +21,9 @@ class utils():
         :param path: (String) directory of position to save the model. Default=.../model
         :return: None
         '''
+        if not os.path.exists(MODEL_PATH):
+            os.mkdir(MODEL_PATH)
+
         with open(os.path.join(os.path.join(path, file_name)), 'wb') as handle:
             pickle.dump(model, handle)
         print(file_name, 'saved at: ', os.path.join(os.path.join(os.getcwd(), 'model', file_name)))
